@@ -10,9 +10,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/books', [BookController::class, 'index']);
-
-Route::get('/books/{id}', [BookController::class, 'show']);
+// Menggantikan route manual /books agar semua route CRUD (index, create, store, show, edit, update, destroy) langsung terdaftar otomatis
+Route::resource('books', BookController::class);
 
 Route::get('/categories', [CategoriesController::class, 'index']);
 
