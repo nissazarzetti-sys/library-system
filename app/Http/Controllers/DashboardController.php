@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book; 
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -12,6 +13,8 @@ class DashboardController extends Controller
         $member = 5;
         $categories = 5;
 
-        return view ('dashboard.index', compact('stokBuku', 'member', 'categories'));
+        $books = Book::all (); 
+
+        return view ('dashboard.index', compact('stokBuku', 'member', 'categories', 'books'));
     }
 }
