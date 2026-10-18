@@ -23,11 +23,23 @@ class BookController extends Controller
     // 3. Simpan data buku baru ke database (Store)
     public function store(Request $request)
     {
+        // Validasi diperketat sesuai ketentuan tugas
         $request->validate([
-            'judul' => 'required',
-            'penulis' => 'required',
-            'tahun_terbit' => 'required|numeric',
-            'stok' => 'required|numeric',
+            'judul'        => 'required|string|min:3|max:255',
+            'penulis'      => 'required|string|min:3|max:100',
+            'tahun_terbit' => 'required|integer|digits:4|min:1900|max:' . date('Y'),
+            'stok'         => 'required|integer|min:0',
+        ], [
+            // Custom pesan error (opsional tetapi memperjelas di UI)
+            'judul.required'        => 'Judul buku wajib diisi.',
+            'judul.min'             => 'Judul buku minimal harus 3 karakter.',
+            'penulis.required'      => 'Nama penulis wajib diisi.',
+            'penulis.min'           => 'Nama penulis minimal harus 3 karakter.',
+            'tahun_terbit.required' => 'Tahun terbit wajib diisi.',
+            'tahun_terbit.digits'   => 'Tahun terbit harus tepat 4 digit angka.',
+            'tahun_terbit.max'      => 'Tahun terbit tidak boleh melebihi tahun sekarang.',
+            'stok.required'         => 'Stok buku wajib diisi.',
+            'stok.min'              => 'Stok tidak boleh bernilai negatif.',
         ]);
 
         Book::create($request->all());
@@ -53,10 +65,10 @@ class BookController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'judul' => 'required',
-            'penulis' => 'required',
-            'tahun_terbit' => 'required|numeric',
-            'stok' => 'required|numeric',
+            'judul'        => 'required|string|min:3|max:255',
+            'penulis'      => 'required|string|min:3|max:100',
+            'tahun_terbit' => 'required|integer|digits:4|min:1900|max:' . date('Y'),
+            'stok'         => 'required|integer|min:0',
         ]);
 
         $book = Book::findOrFail($id);
