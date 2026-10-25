@@ -88,6 +88,7 @@
         <thead>
             <tr>
                 <th>No</th>
+                <th>Kategori</th>
                 <th>Judul</th>
                 <th>Penulis</th>
                 <th>Tahun Terbit</th>
@@ -100,6 +101,7 @@
             @forelse($books as $book)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
+                    <td>{{ $book->category->nama_kategori ?? 'Tanpa Kategori' }}</td>
                     <td>{{ $book->judul }}</td>
                     <td>{{ $book->penulis }}</td>
                     <td>{{ $book->tahun_terbit }}</td>
@@ -116,10 +118,10 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" style="padding: 20px; color: #999;">Belum ada data buku. 📖</td>
+                    <td colspan="7" style="padding: 20px; color: #999;">Belum ada data buku. 📖</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
 </div>
-@endsectionp
+@endsection

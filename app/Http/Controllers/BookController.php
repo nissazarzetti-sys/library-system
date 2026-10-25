@@ -3,34 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Category; // 1. Import Model Category
 use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    // 1. Tampilkan semua data buku (Read)
+    // 1. Tampilkan semua data buku beserta kategorinya (Read)
     public function index()
     {
-        $books = Book::all();
+        // Menggunakan eager loading (with) agar query relational efisien
+        $books = Book::with('category')->get();
         return view('books.index', compact('books'));
     }
 
-    // 2. Tampilkan form tambah buku (Create Form)
+    // 2. Tampilkan form tambah buku beserta pilihan kategori (Create Form)
     public function create()
     {
-        return view('books.create');
+        $categories = Category::all(); // Ambil semua data kategori dari DB
+        return view('books.create', compact('categories'));
     }
 
     // 3. Simpan data buku baru ke database (Store)
     public function store(Request $request)
     {
-        // Validasi diperketat sesuai ketentuan tugas
+        // Validasi diperketat termasuk penambahan category_id
         $request->validate([
+            'category_id'  => 'required|exists:categories,id', // Kategori wajib ada di tabel categories
             'judul'        => 'required|string|min:3|max:255',
             'penulis'      => 'required|string|min:3|max:100',
             'tahun_terbit' => 'required|integer|digits:4|min:1900|max:' . date('Y'),
             'stok'         => 'required|integer|min:0',
         ], [
-            // Custom pesan error (opsional tetapi memperjelas di UI)
+            // Custom pesan error
+            'category_id.required' => 'Kategori buku wajib dipilih.',
+            'category_id.exists'   => 'Kategori yang dipilih tidak valid.',
             'judul.required'        => 'Judul buku wajib diisi.',
             'judul.min'             => 'Judul buku minimal harus 3 karakter.',
             'penulis.required'      => 'Nama penulis wajib diisi.',
@@ -47,28 +53,33 @@ class BookController extends Controller
         return redirect()->route('books.index')->with('success', 'Buku berhasil ditambahkan!');
     }
 
-    // 4. Tampilkan detail satu buku (Show)
+    // 4. Tampilkan detail satu buku beserta kategorinya (Show)
     public function show($id)
     {
-        $book = Book::findOrFail($id);
+        $book = Book::with('category')->findOrFail($id);
         return view('books.show', compact('book'));
     }
 
-    // 5. Tampilkan form edit buku (Edit Form)
+    // 5. Tampilkan form edit buku beserta pilihan kategori (Edit Form)
     public function edit($id)
     {
         $book = Book::findOrFail($id);
-        return view('books.edit', compact('book'));
+        $categories = Category::all(); // Ambil daftar kategori untuk dropdown edit
+        return view('books.edit', compact('book', 'categories'));
     }
 
     // 6. Update data buku di database (Update)
     public function update(Request $request, $id)
     {
         $request->validate([
+            'category_id'  => 'required|exists:categories,id',
             'judul'        => 'required|string|min:3|max:255',
             'penulis'      => 'required|string|min:3|max:100',
             'tahun_terbit' => 'required|integer|digits:4|min:1900|max:' . date('Y'),
             'stok'         => 'required|integer|min:0',
+        ], [
+            'category_id.required' => 'Kategori buku wajib dipilih.',
+            'category_id.exists'   => 'Kategori yang dipilih tidak valid.',
         ]);
 
         $book = Book::findOrFail($id);
