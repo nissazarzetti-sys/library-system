@@ -9,13 +9,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->foreignId('category_id')->nullable()->after('id')->constrained('categories')->onDelete('cascade');
+            // Menambahkan kolom category_id sebagai foreign key
+            $table->foreignId('category_id')
+                  ->nullable()
+                  ->after('id')
+                  ->constrained('categories')
+                  ->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
         Schema::table('books', function (Blueprint $table) {
+            // Menghapus relasi foreign key dan kolom category_id saat rollback
             $table->dropForeign(['category_id']);
             $table->dropColumn('category_id');
         });

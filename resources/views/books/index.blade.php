@@ -18,6 +18,12 @@
         color: #777;
         margin-bottom: 20px;
     }
+    .top-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
     .btn-add {
         display: inline-block;
         background-color: #28a745;
@@ -25,8 +31,19 @@
         padding: 8px 16px;
         text-decoration: none;
         border-radius: 6px;
-        margin-bottom: 15px;
         font-weight: bold;
+    }
+    .btn-logout {
+        background-color: #dc3545;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .btn-logout:hover {
+        background-color: #c82333;
     }
     .book-table {
         width: 100%;
@@ -82,7 +99,14 @@
         </div>
     @endif
 
-    <a href="{{ route('books.create') }}" class="btn-add">+ Tambah Buku Baru</a>
+    <div class="top-actions">
+        <a href="{{ route('books.create') }}" class="btn-add">+ Tambah Buku Baru</a>
+
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit" class="btn-logout" onclick="return confirm('Yakin ingin logout?')">Logout 👋</button>
+        </form>
+    </div>
 
     <table class="book-table">
         <thead>
