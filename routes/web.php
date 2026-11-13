@@ -6,6 +6,7 @@ use App\Http\Controllers\BookController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 
 // Redirect halaman utama ke halaman login
 Route::get('/', function () {
@@ -28,4 +29,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/members', [MemberController::class, 'index']);
     Route::get('/members/{id}', [MemberController::class, 'show']);
     Route::get('/dashboard', [DashboardController::class, 'index']);
+
+    // Route khusus Admin (dilindungi Gate manage-users)
+    Route::get('/users', [UserController::class, 'index'])
+        ->middleware('can:manage-users')
+        ->name('users.index');
 });
